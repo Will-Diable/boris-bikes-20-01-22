@@ -12,19 +12,19 @@ describe DockingStation do
 
   it { is_expected.to respond_to(:dock).with(1).argument }
 
-  it { is_expected.to respond_to(:bike) }
+  #it { is_expected.to respond_to(:bike) }
 
   it 'docks something' do
     bike = Bike.new
     # return docked bike
-    expect(subject.dock(bike)).to eq bike
+    expect(subject.dock(bike)).to include(bike)
   end
 
   it 'returns docked bikes' do
     bike = Bike.new
     subject.dock(bike)
     # return docked bike
-    expect(subject.bike).to eq bike
+    expect(subject.release_bike).is_a? Bike
   end
 
   describe '#release_bike' do
@@ -40,8 +40,15 @@ describe DockingStation do
     it 'releases a bike' do
       bike = Bike.new
       # try to release docked bike
-      expect(subject.release_bike).to eq raise_error
+      expect {subject.release_bike}.to raise_error "No bikes"
     end 
+  end
+
+  describe "#Store 20 bikes" do
+    it "store bikes" do
+      20.times { subject.dock Bike.new }
+      expect {subject.dock Bike.new}.to raise_error "Full"
+    end
   end
 
 end
