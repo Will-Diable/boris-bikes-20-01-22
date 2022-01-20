@@ -7,12 +7,12 @@ describe DockingStation do
     bike = Bike.new
     subject.dock(bike)
     bike = subject.release_bike
-    expect(bike).to be_working
+    expect(bike.working?).to eq true
   end 
 
   it { is_expected.to respond_to(:dock).with(1).argument }
 
-  #it { is_expected.to respond_to(:bike) }
+#  it { is_expected.to respond_to(:bike) }
 
   it 'docks something' do
     bike = Bike.new
@@ -50,5 +50,38 @@ describe DockingStation do
       expect {subject.dock Bike.new}.to raise_error "Full"
     end
   end
+
+  describe "Only store 10 bikes" do
+    it "store 10" do
+      docking_station = DockingStation.new(10)
+      10.times { docking_station.dock Bike.new }
+      expect {docking_station.dock Bike.new}.to raise_error "Full"
+    end
+  end
+
+#  describe "Can a bike be broken" do
+#    it "break bike" do
+#      new_bike = Bike.new
+#      new_bike.report_broken
+#      expect(new_bike.working?).to eq false
+#    end
+#  end
+
+  describe "Can report broken bike" do
+    it "" do
+      new_bike = Bike.new
+      subject.dock(new_bike, true)
+      expect(new_bike.working?).to eq false
+    end
+  end
+
+  describe "dont release broken bikes" do
+    it "" do
+      new_bike = Bike.new
+      subject.dock(new_bike, true)
+      expect {subject.release_bike}.to raise_error "Not working"
+    end
+  end
+
 
 end
